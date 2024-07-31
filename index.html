@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <title>Job Listings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Spartan:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark-cyan: hsl(180, 29%, 50%);
+            --background-cyan: hsl(180, 52%, 96%);
+            --filter-tablets: hsl(180, 31%, 95%);
+            --dark-grayish-cyan: hsl(180, 8%, 52%);
+            --very-dark-grayish-cyan: hsl(180, 14%, 20%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Spartan', sans-serif;
+            background-color: var(--background-cyan);
+            color: var(--very-dark-grayish-cyan);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-dark-cyan);
+            height: 156px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .filter-bar {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            margin-top: -30px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-tag {
+            background-color: var(--filter-tablets);
+            color: var(--primary-dark-cyan);
+            font-weight: 700;
+            padding: 8px 8px 8px 10px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-tag button {
+            background-color: var(--primary-dark-cyan);
+            color: white;
+            border: none;
+            padding: 8px;
+            margin-left: 8px;
+            cursor: pointer;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .filter-tag button:hover {
+            background-color: var(--very-dark-grayish-cyan);
+        }
+
+        .clear-btn {
+            color: var(--dark-grayish-cyan);
+            background: none;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .clear-btn:hover {
+            color: var(--primary-dark-cyan);
+            text-decoration: underline;
+        }
+
+        .job-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .job-card {
+            background-color: white;
+            padding: 32px 40px;
+            border-radius: 5px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .job-card:hover {
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .job-card.featured {
+            border-left: 5px solid var(--primary-dark-cyan);
+        }
+
+        .company-logo {
+            width: 88px;
+            height: 88px;
+            margin-right: 24px;
+        }
+
+        .job-info {
+            flex-grow: 1;
+        }
+
+        .company-name {
+            color: var(--primary-dark-cyan);
+            font-weight: 700;
+            margin-right: 16px;
+        }
+
+        .job-tags {
+            display: inline-flex;
+            gap: 8px;
+        }
+
+        .job-tag {
+            background-color: var(--primary-dark-cyan);
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .job-tag.new {
+            background-color: var(--primary-dark-cyan);
+        }
+
+        .job-tag.featured {
+            background-color: var(--very-dark-grayish-cyan);
+        }
+
+        .job-position {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--very-dark-grayish-cyan);
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .job-position:hover {
+            color: var(--primary-dark-cyan);
+        }
+
+        .job-meta {
+            color: var(--dark-grayish-cyan);
+            font-size: 16px;
+        }
+
+        .job-meta span:not(:last-child)::after {
+            content: "•";
+            margin: 0 8px;
+        }
+
+        .job-categories {
+            display: flex;
+            gap: 16px;
+            margin-left: auto;
+        }
+
+        .category {
+            background-color: var(--filter-tablets);
+            color: var(--primary-dark-cyan);
+            font-weight: 700;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category:hover {
+            background-color: var(--primary-dark-cyan);
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--very-dark-grayish-cyan);
+            color: white;
+            margin-top: 40px;
+        }
+        footer a {
+            color: greenyellow;
+        }
+
+        @media (max-width: 768px) {
+            .job-card {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 24px;
+                position: relative;
+                padding-top: 50px;
+            }
+
+            .company-logo {
+                position: absolute;
+                top: -24px;
+                left: 24px;
+                width: 48px;
+                height: 48px;
+            }
+
+            .job-categories {
+                margin-left: 0;
+                margin-top: 16px;
+                flex-wrap: wrap;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .clear-btn {
+                margin-top: 16px;
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header></header>
+    <main class="container">
+        <section class="filter-bar">
+            <div class="filter-tags" id="filterTags"></div>
+            <button class="clear-btn" id="clearFilters">Clear</button>
+        </section>
+        <section class="job-list" id="jobList"></section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Job Listings. All rights reserved.</p>
+        Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
+        Coded by <a href="https://github.com/Hackerbot24">Hackerbot24</a>.
+    </footer>
+    </footer>
+
+    <script>
+        const jobData = [
+            {
+                "id": 1,
+                "company": "Photosnap",
+                "logo": "./images/photosnap.svg",
+                "new": true,
+                "featured": true,
+                "position": "Senior Frontend Developer",
+                "role": "Frontend",
+                "level": "Senior",
+                "postedAt": "1d ago",
+                "contract": "Full Time",
+                "location": "USA Only",
+                "languages": ["HTML", "CSS", "JavaScript"],
+                "tools": []
+            },
+            // ... (rest of the job data)
+            {
+    "id": 2,
+    "company": "Manage",
+    "logo": "./images/manage.svg",
+    "new": true,
+    "featured": true,
+    "position": "Fullstack Developer",
+    "role": "Fullstack",
+    "level": "Midweight",
+    "postedAt": "1d ago",
+    "contract": "Part Time",
+    "location": "Remote",
+    "languages": ["Python"],
+    "tools": ["React"]
+  },
+  {
+    "id": 3,
+    "company": "Account",
+    "logo": "./images/account.svg",
+    "new": true,
+    "featured": false,
+    "position": "Junior Frontend Developer",
+    "role": "Frontend",
+    "level": "Junior",
+    "postedAt": "2d ago",
+    "contract": "Part Time",
+    "location": "USA Only",
+    "languages": ["JavaScript"],
+    "tools": ["React", "Sass"]
+  },
+  {
+    "id": 4,
+    "company": "MyHome",
+    "logo": "./images/myhome.svg",
+    "new": false,
+    "featured": false,
+    "position": "Junior Frontend Developer",
+    "role": "Frontend",
+    "level": "Junior",
+    "postedAt": "5d ago",
+    "contract": "Contract",
+    "location": "USA Only",
+    "languages": ["CSS", "JavaScript"],
+    "tools": []
+  },
+  {
+    "id": 5,
+    "company": "Loop Studios",
+    "logo": "./images/loop-studios.svg",
+    "new": false,
+    "featured": false,
+    "position": "Software Engineer",
+    "role": "Fullstack",
+    "level": "Midweight",
+    "postedAt": "1w ago",
+    "contract": "Full Time",
+    "location": "Worldwide",
+    "languages": ["JavaScript", "Ruby"],
+    "tools": ["Sass"]
+  },
+  {
+    "id": 6,
+    "company": "FaceIt",
+    "logo": "./images/faceit.svg",
+    "new": false,
+    "featured": false,
+    "position": "Junior Backend Developer",
+    "role": "Backend",
+    "level": "Junior",
+    "postedAt": "2w ago",
+    "contract": "Full Time",
+    "location": "UK Only",
+    "languages": ["Ruby"],
+    "tools": ["RoR"]
+  },
+  {
+    "id": 7,
+    "company": "Shortly",
+    "logo": "./images/shortly.svg",
+    "new": false,
+    "featured": false,
+    "position": "Junior Developer",
+    "role": "Frontend",
+    "level": "Junior",
+    "postedAt": "2w ago",
+    "contract": "Full Time",
+    "location": "Worldwide",
+    "languages": ["HTML", "JavaScript"],
+    "tools": ["Sass"]
+  },
+  {
+    "id": 8,
+    "company": "Insure",
+    "logo": "./images/insure.svg",
+    "new": false,
+    "featured": false,
+    "position": "Junior Frontend Developer",
+    "role": "Frontend",
+    "level": "Junior",
+    "postedAt": "2w ago",
+    "contract": "Full Time",
+    "location": "USA Only",
+    "languages": ["JavaScript"],
+    "tools": ["Vue", "Sass"]
+  },
+  {
+    "id": 9,
+    "company": "Eyecam Co.",
+    "logo": "./images/eyecam-co.svg",
+    "new": false,
+    "featured": false,
+    "position": "Full Stack Engineer",
+    "role": "Fullstack",
+    "level": "Midweight",
+    "postedAt": "3w ago",
+    "contract": "Full Time",
+    "location": "Worldwide",
+    "languages": ["JavaScript", "Python"],
+    "tools": ["Django"]
+  },
+  {
+    "id": 10,
+    "company": "The Air Filter Company",
+    "logo": "./images/the-air-filter-company.svg",
+    "new": false,
+    "featured": false,
+    "position": "Front-end Dev",
+    "role": "Frontend",
+    "level": "Junior",
+    "postedAt": "1mo ago",
+    "contract": "Part Time",
+    "location": "Worldwide",
+    "languages": ["JavaScript"],
+    "tools": ["React", "Sass"]
+  }
+];
+
+        
+
+        const jobList = document.getElementById('jobList');
+        const filterTags = document.getElementById('filterTags');
+        const clearFilters = document.getElementById('clearFilters');
+        let activeFilters = [];
+
+        function renderJobs(jobs) {
+            jobList.innerHTML = '';
+            jobs.forEach(job => {
+                const jobCard = document.createElement('div');
+                jobCard.className = `job-card${job.featured ? ' featured' : ''}`;
+                jobCard.innerHTML = `
+                    <img src="${job.logo}" alt="${job.company} logo" class="company-logo">
+                    <div class="job-info">
+                        <div>
+                            <span class="company-name">${job.company}</span>
+                            <div class="job-tags">
+                                ${job.new ? '<span class="job-tag new">New!</span>' : ''}
+                                ${job.featured ? '<span class="job-tag featured">Featured</span>' : ''}
+                            </div>
+                        </div>
+                        <h2 class="job-position">${job.position}</h2>
+                        <div class="job-meta">
+                            <span>${job.postedAt}</span>
+                            <span>${job.contract}</span>
+                            <span>${job.location}</span>
+                        </div>
+                    </div>
+                    <div class="job-categories">
+                        ${renderCategories(job)}
+                    </div>
+                `;
+                jobList.appendChild(jobCard);
+            });
+        }
+
+        function renderCategories(job) {
+            const categories = [job.role, job.level, ...job.languages, ...job.tools];
+            return categories.map(category => 
+                `<span class="category" data-category="${category}">${category}</span>`
+            ).join('');
+        }
+
+        function applyFilters() {
+            const filteredJobs = jobData.filter(job => {
+                const jobCategories = [job.role, job.level, ...job.languages, ...job.tools];
+                return activeFilters.every(filter => jobCategories.includes(filter));
+            });
+            renderJobs(filteredJobs);
+        }
+
+        function addFilter(filter) {
+            if (!activeFilters.includes(filter)) {
+                activeFilters.push(filter);
+                renderFilterTags();
+                applyFilters();
+            }
+        }
+
+        function removeFilter(filter) {
+            activeFilters = activeFilters.filter(f => f !== filter);
+            renderFilterTags();
+            applyFilters();
+        }
+
+        function renderFilterTags() {
+            filterTags.innerHTML = activeFilters.map(filter => 
+                `<div class="filter-tag">
+                    ${filter}
+                    <button onclick="removeFilter('${filter}')">&times;</button>
+                </div>`
+            ).join('');
+        }
+
+        jobList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('category')) {
+                addFilter(e.target.dataset.category);
+            }
+        });
+
+        clearFilters.addEventListener('click', () => {
+            activeFilters = [];
+            renderFilterTags();
+            renderJobs(jobData);
+        });
+
+        // Initial render
+        renderJobs(jobData);
+    </script>
+</body>
+</html>
